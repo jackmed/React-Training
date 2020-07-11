@@ -45,7 +45,8 @@ class Game extends React.Component {
       history: [{
         squares: Array(9).fill(null),
         xAxis: null,
-        yAxis: null
+        yAxis: null,
+        boldStep: null
       }],
       stepNumber: 0,
       xIsNext: true
@@ -76,6 +77,7 @@ class Game extends React.Component {
     this.setState({
       stepNumber: step,
       xIsNext: (step %2 ) === 0,
+      boldStep: step,
     })
   }
 
@@ -88,6 +90,7 @@ class Game extends React.Component {
 
   render() {
     const history = this.state.history;
+    const boldStep = this.state.boldStep;
     const currentSquares = history[this.state.stepNumber];
 
     const winner = calculateWinner(currentSquares.squares);
@@ -104,10 +107,12 @@ class Game extends React.Component {
         'Go to game start';
       return (
         <li key={move}>
-          <button onClick={() => this.jumpTo(move)}>{desc}</button>
-          {
-            move!==0 && <span>({step.xAxis}, {step.yAxis})</span>
-          }
+          <button
+            onClick={() => this.jumpTo(move)}
+            className={boldStep===move ? "selectHistory" : null}
+          >{desc}
+          </button>
+          <Coordinates move={move} step={step}/>
         </li>
       );
     })
@@ -123,6 +128,19 @@ class Game extends React.Component {
       </div>
     );
   }
+}
+
+/**
+ * 每步坐标组件
+ * @return {null}
+ */
+function Coordinates(props) {
+  if (props.move >0) {
+    return (
+      <span>({props.step.xAxis}, {props.step.yAxis})</span>
+    )
+  }
+  return null;
 }
 
 // ========================================
